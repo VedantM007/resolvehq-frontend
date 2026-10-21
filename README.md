@@ -1,4 +1,4 @@
-# ResolveHQ — Frontend
+# ResolveHQ - Frontend
 
 A role-based customer support and escalation platform built with Angular and TypeScript.
 
@@ -6,7 +6,7 @@ ResolveHQ is a full-stack SaaS portfolio project designed to demonstrate modern 
 
 ## Project Status
 
-**Current phase:** Phase 1 — Foundation and Architecture
+**Current phase:** Phase 1 - Foundation and Architecture
 
 The frontend application is not yet implemented. This repository is being prepared for development.
 
