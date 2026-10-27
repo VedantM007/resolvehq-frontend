@@ -123,25 +123,50 @@
         novalidate
       >
         <div class="form-field">
-          <label for="fullName">Full name</label>
+          <label for="firstName">First name</label>
           <mat-form-field appearance="outline" class="full-width">
             <input
-              id="fullName"
+              id="firstName"
               matInput
               type="text"
-              formControlName="fullName"
-              placeholder="e.g. Alex Morgan"
-              autocomplete="name"
-              aria-describedby="fullName-error"
+              formControlName="firstName"
+              placeholder="e.g. Alex"
+              autocomplete="given-name"
+              aria-describedby="firstName-error"
             />
 
-            @if (fullName.touched && fullName.hasError('required')) {
-              <mat-error id="fullName-error">
-                Please enter your full name.
+            @if (firstName.touched && firstName.hasError('required')) {
+              <mat-error id="firstName-error">
+                Please enter your first name.
               </mat-error>
-            } @else if (fullName.touched && fullName.hasError('minlength')) {
-              <mat-error id="fullName-error">
-                Name must contain at least 2 characters.
+            } @else if (firstName.touched && firstName.hasError('minlength')) {
+              <mat-error id="firstName-error">
+                First name must contain at least 2 characters.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-field">
+          <label for="lastName">Last name</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              id="lastName"
+              matInput
+              type="text"
+              formControlName="lastName"
+              placeholder="e.g. Morgan"
+              autocomplete="family-name"
+              aria-describedby="lastName-error"
+            />
+
+            @if (lastName.touched && lastName.hasError('required')) {
+              <mat-error id="lastName-error">
+                Please enter your last name.
+              </mat-error>
+            } @else if (lastName.touched && lastName.hasError('minlength')) {
+              <mat-error id="lastName-error">
+                Last name must contain at least 2 characters.
               </mat-error>
             }
           </mat-form-field>
@@ -275,7 +300,7 @@
 
       <p class="signin-prompt">
         Already have an account?
-        <span class="signin-link">Sign in (coming soon)</span>
+        <a class="signin-link" routerLink="/auth/sign-in">Sign in</a>
       </p>
 
       <p class="security-note">

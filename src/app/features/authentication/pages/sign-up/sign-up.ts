@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   AbstractControl,
   FormControl,
@@ -88,6 +89,7 @@ const passwordsMatchValidator: ValidatorFn = (
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    RouterLink
   ],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
@@ -103,7 +105,11 @@ export class SignUp implements OnDestroy {
 
   readonly signUpForm = new FormGroup(
     {
-      fullName: new FormControl('', {
+      firstName: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(2)],
+      }),
+      lastName: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required, Validators.minLength(2)],
       }),
@@ -162,8 +168,12 @@ export class SignUp implements OnDestroy {
     this.confirmPasswordSub?.unsubscribe();
   }
 
-  get fullName() {
-    return this.signUpForm.controls.fullName;
+  get firstName() {
+    return this.signUpForm.controls.firstName;
+  }
+
+  get lastName() {
+    return this.signUpForm.controls.lastName;
   }
 
   get email() {

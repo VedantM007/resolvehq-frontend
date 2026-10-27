@@ -32,7 +32,8 @@ describe('SignUp', () => {
 
     component.onSubmit();
 
-    expect(component.fullName.touched).toBe(true);
+    expect(component.firstName.touched).toBe(true);
+    expect(component.lastName.touched).toBe(true);
     expect(component.email.touched).toBe(true);
     expect(component.password.touched).toBe(true);
     expect(component.confirmPassword.touched).toBe(true);
@@ -132,7 +133,8 @@ describe('SignUp', () => {
     const component = fixture.componentInstance;
 
     component.signUpForm.setValue({
-      fullName: 'Alex Morgan',
+      firstName: 'Alex',
+      lastName: 'Morgan',
       email: 'alex@example.com',
       password: 'StrongPass123!',
       confirmPassword: 'StrongPass123!',
@@ -143,5 +145,28 @@ describe('SignUp', () => {
 
     expect(component.signUpForm.valid).toBe(true);
     expect(component.statusMessage).toContain('after Auth0 integration');
+  });
+
+  it('should validate first name and last name requirements', () => {
+    const fixture = TestBed.createComponent(SignUp);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    // Required validation
+    expect(component.firstName.hasError('required')).toBe(true);
+    expect(component.lastName.hasError('required')).toBe(true);
+
+    // Minlength validation
+    component.firstName.setValue('A');
+    expect(component.firstName.hasError('minlength')).toBe(true);
+
+    component.lastName.setValue('B');
+    expect(component.lastName.hasError('minlength')).toBe(true);
+
+    // Valid inputs
+    component.firstName.setValue('Alex');
+    component.lastName.setValue('Morgan');
+    expect(component.firstName.valid).toBe(true);
+    expect(component.lastName.valid).toBe(true);
   });
 });
