@@ -1,0 +1,287 @@
+<div class="signup-page">
+  <section class="brand-panel" aria-label="About ResolveHQ">
+    <div class="brand-content">
+      <a class="brand" href="/" aria-label="ResolveHQ home">
+        <span class="brand-mark" aria-hidden="true">
+          <mat-icon>support_agent</mat-icon>
+        </span>
+        <span>Resolve<span class="brand-highlight">HQ</span></span>
+      </a>
+
+      <div class="brand-message">
+        <span class="eyebrow">
+          <span class="status-dot"></span>
+          CUSTOMER SUPPORT, SIMPLIFIED
+        </span>
+
+        <h1>Great support starts with a better conversation.</h1>
+
+        <p>
+          One place to raise issues, track progress, and get the answers
+          you need. Let's resolve things together.
+        </p>
+      </div>
+
+      <div class="support-visual" aria-hidden="true">
+        <div class="visual-glow"></div>
+
+        <div class="visual-orbit orbit-one"></div>
+        <div class="visual-orbit orbit-two"></div>
+
+        <div class="ticket-card">
+          <div class="ticket-top">
+            <span class="ticket-icon">
+              <mat-icon>confirmation_number</mat-icon>
+            </span>
+            <span class="ticket-status">In progress</span>
+          </div>
+
+          <p class="ticket-label">SUPPORT REQUEST</p>
+          <h2>Help is on the way</h2>
+          <p class="ticket-description">
+            Your issue is with the right team.
+          </p>
+
+          <div class="ticket-progress">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="ticket-footer">
+            <div class="avatar-stack">
+              <span class="avatar avatar-one">R</span>
+              <span class="avatar avatar-two">S</span>
+            </div>
+            <span>Team is on it</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+
+        <div class="floating-card floating-card-top">
+          <span class="floating-icon">
+            <mat-icon>check_circle</mat-icon>
+          </span>
+          <span>
+            <strong>Issue tracked</strong>
+            <small>Every step, visible</small>
+          </span>
+        </div>
+
+        <div class="floating-card floating-card-bottom">
+          <span class="floating-icon message-icon">
+            <mat-icon>chat_bubble_outline</mat-icon>
+          </span>
+          <span>
+            <strong>Stay in the loop</strong>
+            <small>Updates in one place</small>
+          </span>
+        </div>
+      </div>
+
+      <p class="brand-footer">
+        Support that moves things forward.
+      </p>
+    </div>
+  </section>
+
+  <main class="form-panel">
+    <div class="form-container">
+      <div class="mobile-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <mat-icon>support_agent</mat-icon>
+        </span>
+        <span>Resolve<span class="brand-highlight">HQ</span></span>
+      </div>
+
+      <div class="form-heading">
+        <span class="form-eyebrow">GET STARTED FOR FREE</span>
+        <h2>Create your account</h2>
+        <p>Join ResolveHQ and get your support journey started.</p>
+      </div>
+
+      <button
+        class="google-button"
+        type="button"
+        disabled
+        aria-label="Google sign-up is coming soon"
+      >
+        <span class="google-mark" aria-hidden="true">G</span>
+        <span>Continue with Google</span>
+        <span class="coming-soon">Soon</span>
+      </button>
+
+      <div class="divider">
+        <span></span>
+        <span>OR SIGN UP WITH EMAIL</span>
+        <span></span>
+      </div>
+
+      <form
+        [formGroup]="signUpForm"
+        (ngSubmit)="onSubmit()"
+        novalidate
+      >
+        <div class="form-field">
+          <label for="fullName">Full name</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              id="fullName"
+              matInput
+              type="text"
+              formControlName="fullName"
+              placeholder="e.g. Alex Morgan"
+              autocomplete="name"
+              aria-describedby="fullName-error"
+            />
+
+            @if (fullName.touched && fullName.hasError('required')) {
+              <mat-error id="fullName-error">
+                Please enter your full name.
+              </mat-error>
+            } @else if (fullName.touched && fullName.hasError('minlength')) {
+              <mat-error id="fullName-error">
+                Name must contain at least 2 characters.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-field">
+          <label for="email">Work or personal email</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              id="email"
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              aria-describedby="email-error"
+            />
+
+            @if (email.touched && email.hasError('required')) {
+              <mat-error id="email-error">
+                Please enter your email address.
+              </mat-error>
+            } @else if (email.touched && email.hasError('email')) {
+              <mat-error id="email-error">
+                Enter a valid email address.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              id="password"
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Create a strong password"
+              autocomplete="new-password"
+              aria-describedby="password-error"
+            />
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              [attr.aria-pressed]="showPassword"
+            >
+              <mat-icon>
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+            </button>
+
+            @if (isPasswordInvalid) {
+              <mat-error id="password-error">
+                Password must be at least 8 characters long. Password must contain at least one uppercase letter, one special character, and one number.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-field">
+          <label for="confirmPassword">Confirm password</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              id="confirmPassword"
+              matInput
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              [errorStateMatcher]="confirmPasswordMatcher"
+              placeholder="Re-enter your password"
+              autocomplete="new-password"
+              aria-describedby="confirmPassword-error"
+            />
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="showConfirmPassword = !showConfirmPassword"
+              [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+              [attr.aria-pressed]="showConfirmPassword"
+            >
+              <mat-icon>
+                {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+            </button>
+
+            @if (
+              confirmPassword.touched &&
+              confirmPassword.hasError('required')
+            ) {
+              <mat-error id="confirmPassword-error">
+                Please confirm your password.
+              </mat-error>
+            } @else if (passwordsDoNotMatch) {
+              <mat-error id="confirmPassword-error">
+                Your passwords don't match.
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="terms-field">
+          <mat-checkbox formControlName="acceptTerms">
+            I agree to the Terms of Service and Privacy Policy.
+          </mat-checkbox>
+
+          @if (acceptTerms.touched && acceptTerms.invalid) {
+            <p class="terms-error">
+              Please accept the terms to continue.
+            </p>
+          }
+        </div>
+
+        <button class="submit-button" type="submit">
+          <span>Create account</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+        @if (statusMessage) {
+          <p class="status-message" role="status">
+            <mat-icon>info</mat-icon>
+            <span>{{ statusMessage }}</span>
+          </p>
+        }
+      </form>
+
+      <p class="signin-prompt">
+        Already have an account?
+        <span class="signin-link">Sign in (coming soon)</span>
+      </p>
+
+      <p class="security-note">
+        <mat-icon>lock</mat-icon>
+        Your information is kept secure.
+      </p>
+    </div>
+  </main>
+</div>

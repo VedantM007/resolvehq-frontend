@@ -1,7 +1,25 @@
+<button
+  class="theme-toggle"
+  type="button"
+  (click)="toggleTheme()"
+  [attr.aria-label]="
+    theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+  "
+  [attr.aria-pressed]="theme === 'dark'"
+>
+  <mat-icon>
+    {{ theme === 'light' ? 'dark_mode' : 'light_mode' }}
+  </mat-icon>
+  <span>{{ theme === 'light' ? 'Dark mode' : 'Light mode' }}</span>
+</button>
 
-<main class="app-shell">
-  <h1>ResolveHQ</h1>
-  <p>Customer Support &amp; Escalation Platform</p>
+<div class="app-layout">
+  <div class="app-content">
+    <router-outlet />
+  </div>
 
-  <router-outlet />
-</main>
+  <footer class="app-footer" role="contentinfo">
+    <span class="footer-copy">© Copyright {{ currentYear }} Vedant Labs.</span>
+    <span class="footer-tagline">All Rights Reserved.</span>
+  </footer>
+</div>
