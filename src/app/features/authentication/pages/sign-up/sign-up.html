@@ -122,8 +122,322 @@
         (ngSubmit)="onSubmit()"
         novalidate
       >
+        <!-- Mandatory Profile Picture Field -->
+        <div class="profile-upload-section">
+          <label class="profile-upload-label" id="profile-picture-label">
+            Profile photo <span class="required-indicator" aria-hidden="true">*</span>
+          </label>
+
+          <input
+            #fileInput
+            id="profilePictureInput"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            class="visually-hidden-file-input"
+            (change)="onProfilePicSelected($event)"
+            aria-labelledby="profile-picture-label"
+            [attr.aria-describedby]="isProfilePictureInvalid ? 'profile-error' : 'profile-hint'"
+          />
+
+          <div
+            class="profile-upload-card"
+            [class.has-error]="isProfilePictureInvalid"
+            [class.has-preview]="!!profilePicPreview"
+          >
+            <div
+              class="avatar-preview-wrapper"
+              [class.clickable]="true"
+              tabindex="0"
+              role="button"
+              [attr.aria-label]="profilePicPreview ? 'View or edit full-size profile picture' : 'Upload profile picture'"
+              (click)="profilePicPreview ? openPreviewModal() : fileInput.click()"
+              (keydown.enter)="profilePicPreview ? openPreviewModal() : fileInput.click()"
+              (keydown.space)="profilePicPreview ? openPreviewModal() : fileInput.click(); $event.preventDefault()"
+            >
+              @if (profilePicPreview) {
+                <img
+                  [src]="profilePicPreview"
+                  [alt]="profilePicFileName ? 'Preview of ' + profilePicFileName : 'Profile preview'"
+                  class="avatar-preview-img"
+                />
+                <div class="avatar-hover-overlay" title="Click to view large preview">
+                  <mat-icon>zoom_in</mat-icon>
+                </div>
+              } @else {
+                <div class="avatar-placeholder" aria-hidden="true">
+                  <mat-icon>person</mat-icon>
+                </div>
+                <div class="avatar-hover-overlay" title="Click to upload">
+                  <mat-icon>add_a_photo</mat-icon>
+                </div>
+              }
+            </div>
+
+            <div class="profile-upload-details">
+              <div class="profile-upload-actions">
+                <button
+                  type="button"
+                  mat-stroked-button
+                  class="avatar-action-btn upload-btn"
+                  (click)="fileInput.click()"
+                >
+                  <mat-icon>{{ profilePicPreview ? 'cached' : 'add_photo_alternate' }}</mat-icon>
+                  <span>{{ profilePicPreview ? 'Change' : 'Upload photo' }}</span>
+                </button>
+
+                @if (profilePicPreview) {
+                  <button
+                    type="button"
+                    mat-stroked-button
+                    class="avatar-action-btn crop-btn"
+                    (click)="openCropper()"
+                    aria-label="Crop and adjust photo"
+                  >
+                    <mat-icon>crop</mat-icon>
+                    <span>Crop</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    mat-stroked-button
+                    class="avatar-action-btn remove-btn"
+                    (click)="removeProfilePicture(fileInput)"
+                    aria-label="Remove profile photo"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                    <span>Remove</span>
+                  </button>
+                }
+              </div>
+
+              @if (profilePicFileName && profilePicPreview) {
+                <p class="profile-file-name" [title]="profilePicFileName">
+                  {{ profilePicFileName }}
+                </p>
+              }
+
+              <p class="profile-hint" id="profile-hint">
+                Mandatory. Click avatar to inspect or edit. JPG, PNG, WEBP, or GIF up to 5MB.
+              </p>
+            </div>
+          </div>
+
+          @if (isProfilePictureInvalid) {
+            <p class="profile-error-message" id="profile-error" role="alert">
+              <mat-icon>error_outline</mat-icon>
+              <span>{{ profilePictureErrorMessage }}</span>
+            </p>
+          }
+        </div>
+
+        <!-- Large Image Preview Modal -->
+        @if (isViewModalOpen && profilePicPreview) {
+          <div
+            class="modal-backdrop"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="preview-modal-title"
+            (click)="closePreviewModal()"
+          >
+            <div class="preview-dialog" (click)="$event.stopPropagation()">
+              <div class="modal-header">
+                <div class="modal-title-wrap">
+                  <mat-icon>visibility</mat-icon>
+                  <h3 id="preview-modal-title">Profile Picture Preview</h3>
+                </div>
+                <button
+                  type="button"
+                  class="modal-close-btn"
+                  (click)="closePreviewModal()"
+                  aria-label="Close preview"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+
+              <div class="preview-modal-body">
+                <div class="large-avatar-frame">
+                  <img
+                    [src]="profilePicPreview"
+                    [alt]="profilePicFileName ? 'Enlarged ' + profilePicFileName : 'Enlarged profile photo'"
+                    class="large-avatar-img"
+                  />
+                </div>
+                @if (profilePicFileName) {
+                  <p class="modal-file-info">{{ profilePicFileName }}</p>
+                }
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  mat-stroked-button
+                  class="avatar-action-btn crop-btn"
+                  (click)="closePreviewModal(); openCropper()"
+                >
+                  <mat-icon>crop</mat-icon>
+                  <span>Crop / Adjust</span>
+                </button>
+                <button
+                  type="button"
+                  mat-flat-button
+                  class="modal-primary-btn"
+                  (click)="closePreviewModal()"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Interactive Image Cropper Modal -->
+        @if (isCropModalOpen && rawImageSrc) {
+          <div
+            class="modal-backdrop"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="crop-modal-title"
+            (click)="closeCropper()"
+          >
+            <div
+              class="crop-dialog"
+              (click)="$event.stopPropagation()"
+              (mousemove)="onCropDrag($event)"
+              (mouseup)="stopCropDrag()"
+              (mouseleave)="stopCropDrag()"
+              (touchmove)="onCropDrag($event)"
+              (touchend)="stopCropDrag()"
+            >
+              <div class="modal-header">
+                <div class="modal-title-wrap">
+                  <mat-icon>crop</mat-icon>
+                  <h3 id="crop-modal-title">Crop Profile Picture</h3>
+                </div>
+                <button
+                  type="button"
+                  class="modal-close-btn"
+                  (click)="closeCropper()"
+                  aria-label="Cancel cropping"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+
+              <div class="crop-modal-body">
+                <p class="crop-instructions">
+                  Drag the image to reposition and use the zoom slider to adjust framing.
+                </p>
+
+                <div
+                  class="crop-viewport"
+                  (mousedown)="startCropDrag($event)"
+                  (touchstart)="startCropDrag($event)"
+                  [class.is-dragging]="isDraggingCrop"
+                  title="Drag to reposition"
+                >
+                 <img
+  #cropImageRef
+  [src]="rawImageSrc"
+  alt="Image to crop"
+  class="crop-target-image"
+  [style.width.px]="cropImageWidth"
+  [style.height.px]="cropImageHeight"
+  [style.transform]="
+    'translate(-50%, -50%) translate(' +
+    cropPanX +
+    'px, ' +
+    cropPanY +
+    'px) scale(' +
+    cropZoom +
+    ')'
+  "
+  (load)="onCropImageLoad($event)"
+  draggable="false"
+/>
+                  <!-- Circular overlay guide -->
+                  <div class="crop-circle-guide" aria-hidden="true"></div>
+                </div>
+
+                <div class="crop-controls">
+                  <div class="zoom-control">
+                    <button
+                      type="button"
+                      class="zoom-step-btn"
+                      (click)="onZoomChange(cropZoom - 0.2)"
+                      aria-label="Zoom out"
+                      [disabled]="cropZoom <= 1"
+                    >
+                      <mat-icon>zoom_out</mat-icon>
+                    </button>
+
+                    <div class="zoom-slider-wrap">
+                      <mat-slider
+                        min="1"
+                        max="3"
+                        step="0.05"
+                        discrete="false"
+                        class="zoom-slider"
+                      >
+                        <input
+                          matSliderThumb
+                          [value]="cropZoom"
+                          (input)="onZoomChange($any($event.target).value)"
+                          aria-label="Image zoom"
+                        />
+                      </mat-slider>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="zoom-step-btn"
+                      (click)="onZoomChange(cropZoom + 0.2)"
+                      aria-label="Zoom in"
+                      [disabled]="cropZoom >= 3"
+                    >
+                      <mat-icon>zoom_in</mat-icon>
+                    </button>
+                  </div>
+
+                  <div class="crop-quick-actions">
+                    <button
+                      type="button"
+                      class="reset-position-btn"
+                      (click)="cropPanX = 0; cropPanY = 0; cropZoom = 1"
+                      aria-label="Reset zoom and position"
+                    >
+                      <mat-icon>refresh</mat-icon>
+                      <span>Reset position</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  mat-stroked-button
+                  class="modal-cancel-btn"
+                  (click)="closeCropper()"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  mat-flat-button
+                  class="modal-apply-btn"
+                  (click)="applyCrop()"
+                >
+                  <mat-icon>check</mat-icon>
+                  <span>Apply Crop</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
         <div class="form-field">
-          <label for="firstName">First name</label>
+          <label for="firstName">First name <span class="required-indicator" aria-hidden="true">*</span></label>
           <mat-form-field appearance="outline" class="full-width">
             <input
               id="firstName"
@@ -148,7 +462,7 @@
         </div>
 
         <div class="form-field">
-          <label for="lastName">Last name</label>
+          <label for="lastName">Last name <span class="required-indicator" aria-hidden="true">*</span></label>
           <mat-form-field appearance="outline" class="full-width">
             <input
               id="lastName"
@@ -173,7 +487,7 @@
         </div>
 
         <div class="form-field">
-          <label for="email">Work or personal email</label>
+          <label for="email">Work or personal email <span class="required-indicator" aria-hidden="true">*</span></label>
           <mat-form-field appearance="outline" class="full-width">
             <input
               id="email"
@@ -198,7 +512,7 @@
         </div>
 
         <div class="form-field">
-          <label for="password">Password</label>
+          <label for="password">Password <span class="required-indicator" aria-hidden="true">*</span></label>
           <mat-form-field appearance="outline" class="full-width">
             <input
               id="password"
@@ -232,7 +546,7 @@
         </div>
 
         <div class="form-field">
-          <label for="confirmPassword">Confirm password</label>
+          <label for="confirmPassword">Confirm password <span class="required-indicator" aria-hidden="true">*</span></label>
           <mat-form-field appearance="outline" class="full-width">
             <input
               id="confirmPassword"
